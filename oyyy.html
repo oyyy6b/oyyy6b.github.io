@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<!-- 声明这是一个HTML5文档 -->
+<html lang="zh-CN">
+<!-- 根标签，所有内容都放在这里，lang="zh-CN"表示页面是中文 -->
+
+<head>
+    <!-- 头部：放页面配置信息，用户看不到 -->
+    <meta charset="UTF-8">
+    <!-- 字符编码：必须写！不然中文会变成乱码 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 适配手机：让网页在手机上正常显示，不会缩小 -->
+    <title>Oyyy的个人主页</title>
+    <!-- 浏览器标签页的标题 -->
+
+    <!-- 这里写CSS样式：控制页面的颜色、大小、布局（相当于装修） -->
+    <style>
+        /* 全局样式：让页面居中，背景变浅灰 */
+        body {
+            font-family: Arial, sans-serif; /* 字体 */
+            max-width: 800px; /* 页面最大宽度 */
+            margin: 0 auto; /* 水平居中 */
+            padding: 20px; /* 内边距 */
+            background-color: #f5f5f5; /* 背景颜色 */
+        }
+
+        /* 标题样式 */
+        h1 {
+            color: #333; /* 文字颜色 */
+            text-align: center; /* 居中 */
+        }
+
+        /* 图片样式 */
+        .avatar {
+            width: 150px; /* 宽度 */
+            height: 150px; /* 高度 */
+            border-radius: 50%; /* 变成圆形 */
+            display: block; /* 块级元素 */
+            margin: 20px auto; /* 居中 */
+        }
+
+        /* 卡片样式：把内容包起来，加阴影 */
+        .card {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px; /* 圆角 */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 阴影 */
+        }
+
+        /* 按钮样式 */
+        button {
+            background-color: #4CAF50; /* 绿色背景 */
+            color: white; /* 白色文字 */
+            padding: 10px 20px; /* 内边距 */
+            border: none; /* 去掉边框 */
+            border-radius: 4px; /* 圆角 */
+            cursor: pointer; /* 鼠标放上去变成手型 */
+            display: block;
+            margin: 20px auto;
+        }
+
+        button:hover {
+            background-color: #45a049; /* 鼠标放上去变深绿色 */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 身体：放用户能看到的所有内容 -->
+
+    <h1>欢迎来到 Oyyy 的个人主页 🚀</h1>
+
+    <!-- 头像图片 -->
+    <img class="avatar" src="https://placehold.co/150x150/4CAF50/white?text=Oyyy" alt="我的头像">
+
+    <!-- 个人介绍卡片 -->
+    <div class="card">
+        <h2>关于我</h2>
+        <p>你好！我是 Oyyy，一个正在学习前端的新手。</p>
+        <p>这是我用 HTML + CSS 做的第一个个人网页，以后会慢慢更新更多内容。</p>
+    </div>
+
+    <!-- 兴趣爱好卡片 -->
+    <div class="card">
+        <h2>我的兴趣爱好</h2>
+        <ul>
+            <li>编程（正在学前端）</li>
+            <li>听音乐</li>
+            <li>看电影</li>
+            <li>打游戏</li>
+        </ul>
+    </div>
+
+    <!-- 链接卡片 -->
+    <div class="card">
+        <h2>我的链接</h2>
+        <p>我的网站：<a href="https://oyyynb.top" target="_blank">oyyynb.top</a></p>
+        <p>GitHub：<a href="https://github.com" target="_blank">点击访问</a></p>
+    </div>
+
+    <!-- 交互按钮 -->
+    <button onclick="sayHello()">点我一下试试！</button>
+
+    <!-- 这里写JavaScript：实现交互效果（相当于家电） -->
+    <script>
+        function sayHello() {
+            // 点击按钮时弹出提示框
+            alert("你好！欢迎来到我的网页 😊");
+        }
+    </script>
+
+</body>
+</html>
