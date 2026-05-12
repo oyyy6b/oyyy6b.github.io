@@ -3,54 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OYYYNB | 个人主页</title>
+    <title>Oyyy | 个人主页</title>
     <style>
+        /* 全局重置 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
         }
 
+        /* 动态渐变背景 */
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            text-align: center;
-            padding: 20px;
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #fff;
+            padding: 2rem 1rem;
+            transition: background 0.5s ease;
         }
 
+        /* 暗黑模式样式 */
+        body.dark-mode {
+            background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533483);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 容器居中 */
         .container {
-            max-width: 600px;
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
             animation: fadeIn 1.5s ease;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 头像样式 */
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: 4px solid rgba(255,255,255,0.3);
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        /* 标题样式 */
         h1 {
-            font-size: 50px;
-            margin-bottom: 20px;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
             text-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        p {
-            font-size: 20px;
-            margin-bottom: 40px;
+        .subtitle {
+            font-size: 1.1rem;
             opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        /* 卡片布局 */
+        .card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            text-align: left;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card p, .card ul {
+            font-size: 1rem;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        .card ul {
+            list-style-position: inside;
+            padding-left: 0;
+        }
+
+        /* 链接按钮 */
+        .links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
         }
 
         .btn {
             display: inline-block;
-            padding: 14px 35px;
+            padding: 0.8rem 1.8rem;
             background: rgba(255,255,255,0.2);
             color: white;
             border-radius: 50px;
             text-decoration: none;
-            font-size: 18px;
+            font-size: 1rem;
             border: 2px solid rgba(255,255,255,0.3);
             backdrop-filter: blur(10px);
-            transition: 0.3s;
+            transition: all 0.3s ease;
         }
 
         .btn:hover {
@@ -60,17 +145,86 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* 暗黑模式切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: white;
+            color: #764ba2;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .card { padding: 1.2rem; }
+            .links { flex-direction: column; align-items: center; }
         }
     </style>
 </head>
 <body>
+    <!-- 暗黑模式切换按钮 -->
+    <button class="theme-toggle" id="themeToggle">🌙</button>
+
     <div class="container">
-        <h1>OYYYNB.TOP</h1>
-        <p>欢迎来到我的个人网站</p>
-        <a href="https://oyyynb.top" class="btn">进入主页</a>
+        <!-- 头像 -->
+        <div class="avatar">O</div>
+
+        <!-- 标题和副标题 -->
+        <h1>欢迎来到 Oyyy 的个人主页 🚀</h1>
+        <p class="subtitle">元神nb</p>
+
+        <!-- 关于我卡片 -->
+        <div class="card">
+            <h3>👋 关于我</h3>
+            <p>你好！我是 Oyyy，一个正在学习元神的新手。</p>
+            <p>这是元神</p>
+        </div>
+
+        <!-- 兴趣爱好卡片 -->
+        <div class="card">
+            <h3>🎯 我的兴趣爱好</h3>
+            <ul>
+                <li>元神nb</li>
+                <li>元神nb</li>
+                <li>元神nb</li>
+                <li>元神nb</li>
+            </ul>
+        </div>
+
+        <!-- 链接卡片 -->
+        <div class="card">
+            <h3>🔗 我的链接</h3>
+            <div class="links">
+                <a href="https://oyyynb.top" class="btn">我的网站</a>
+                <a href="https://github.com/oyyy6b" class="btn">GitHub</a>
+            </div>
+        </div>
     </div>
+
+    <script>
+        // 暗黑模式切换逻辑
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            themeToggle.textContent = body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        });
+    </script>
 </body>
 </html>
