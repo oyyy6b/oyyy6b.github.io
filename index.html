@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oyyy | 个人主页</title>
     <style>
-        /* 全局重置 */
         * {
             margin: 0;
             padding: 0;
@@ -13,31 +12,22 @@
             font-family: 'Segoe UI', system-ui, sans-serif;
         }
 
-        /* 动态渐变背景 */
         body {
             min-height: 100vh;
-            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             color: #fff;
-            padding: 2rem 1rem;
-            transition: background 0.5s ease;
+            padding: 2rem 1rem 8rem;
         }
 
-        /* 暗黑模式样式 */
-        body.dark-mode {
-            background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533483);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+        .mask {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: -1;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* 容器居中 */
         .container {
             max-width: 700px;
             margin: 0 auto;
@@ -50,7 +40,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 头像样式 */
         .avatar {
             width: 120px;
             height: 120px;
@@ -64,23 +53,24 @@
             font-size: 3rem;
             font-weight: bold;
             backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
         }
 
-        /* 标题样式 */
         h1 {
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            text-shadow: 0 2px 10px #000;
         }
 
-        .subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 2rem;
+        .info-bar {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 1rem;
+            font-size: 15px;
+            line-height: 1.6;
         }
 
-        /* 卡片布局 */
         .card {
             background: rgba(255,255,255,0.15);
             backdrop-filter: blur(10px);
@@ -88,41 +78,11 @@
             padding: 1.5rem;
             margin-bottom: 1.5rem;
             border: 1px solid rgba(255,255,255,0.2);
-            text-align: left;
-            transition: transform 0.3s ease;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
-
-        .card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .card p, .card ul {
-            font-size: 1rem;
-            line-height: 1.6;
-            opacity: 0.95;
-        }
-
-        .card ul {
-            list-style-position: inside;
-            padding-left: 0;
-        }
-
-        /* 链接按钮 */
-        .links {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 2rem;
+        .yan-text {
+            font-style: italic;
+            font-size: 16px;
         }
 
         .btn {
@@ -132,99 +92,197 @@
             color: white;
             border-radius: 50px;
             text-decoration: none;
-            font-size: 1rem;
             border: 2px solid rgba(255,255,255,0.3);
-            backdrop-filter: blur(10px);
             transition: all 0.3s ease;
+            margin: 6px;
         }
 
         .btn:hover {
-            background: white;
-            color: #764ba2;
+            background: #fff;
+            color: #333;
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
 
-        /* 暗黑模式切换按钮 */
-        .theme-toggle {
+        /* 底部悬浮音乐播放器 */
+        .music-box {
             position: fixed;
-            top: 1rem;
-            right: 1rem;
-            background: rgba(255,255,255,0.2);
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(12px);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .music-name {
+            max-width: 180px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .music-btn {
+            background: #fff;
+            color: #222;
             border: none;
-            color: white;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            font-size: 1.2rem;
+            border-radius: 20px;
+            padding: 4px 12px;
             cursor: pointer;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255,255,255,0.3);
-            transition: all 0.3s ease;
-        }
-
-        .theme-toggle:hover {
-            background: white;
-            color: #764ba2;
-        }
-
-        /* 响应式适配 */
-        @media (max-width: 600px) {
-            h1 { font-size: 2rem; }
-            .card { padding: 1.2rem; }
-            .links { flex-direction: column; align-items: center; }
         }
     </style>
 </head>
 <body>
-    <!-- 暗黑模式切换按钮 -->
-    <button class="theme-toggle" id="themeToggle">🌙</button>
+<div class="mask"></div>
 
-    <div class="container">
-        <!-- 头像 -->
-        <div class="avatar">O</div>
+<div class="container">
+    <div class="avatar">O</div>
+    <h1>欢迎来到 Oyyy 个人主页</h1>
 
-        <!-- 标题和副标题 -->
-        <h1>欢迎来到 Oyyy 的个人主页 🚀</h1>
-        <p class="subtitle">元神nb</p>
-
-        <!-- 关于我卡片 -->
-        <div class="card">
-            <h3>👋 关于我</h3>
-            <p>你好！我是 Oyyy，一个正在学习元神的新手。</p>
-            <p>这是元神</p>
-        </div>
-
-        <!-- 兴趣爱好卡片 -->
-        <div class="card">
-            <h3>🎯 我的兴趣爱好</h3>
-            <ul>
-                <li>元神nb</li>
-                <li>元神nb</li>
-                <li>元神nb</li>
-                <li>元神nb</li>
-            </ul>
-        </div>
-
-        <!-- 链接卡片 -->
-        <div class="card">
-            <h3>🔗 我的链接</h3>
-            <div class="links">
-                <a href="https://oyyynb.top" class="btn">我的网站</a>
-                <a href="https://github.com/oyyy6b" class="btn">GitHub</a>
-            </div>
-        </div>
+    <div class="info-bar">
+        <div id="now-time">⏳ 加载时间中...</div>
+        <div id="user-area">🌍 定位加载中...</div>
+        <div id="visit-count">👁️ 访问统计加载中...</div>
     </div>
 
-    <script>
-        // 暗黑模式切换逻辑
-        const themeToggle = document.getElementById('themeToggle');
-        const body = document.body;
+    <div class="card">
+        <p class="yan-text" id="yan">📜 正在加载今日语录...</p>
+    </div>
 
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
-            themeToggle.textContent = body.classList.contains('dark-mode') ? '☀️' : '🌙';
-        });
-    </script>
+    <div class="card">
+        <h3>👋 关于我</h3>
+        <p>热爱折腾网站与技术，本站基于 GitHub Pages + 第三方接口搭建</p>
+    </div>
+
+    <div>
+        <a href="https://github.com/oyyy6b" class="btn">我的 GitHub</a>
+    </div>
+</div>
+
+<!-- 底部音乐播放器 -->
+<div class="music-box">
+    <span class="music-name" id="songName">🎵 加载歌曲中...</span>
+    <button class="music-btn" id="prevBtn">上一首</button>
+    <button class="music-btn" id="playBtn">播放</button>
+    <button class="music-btn" id="nextBtn">下一首</button>
+    <audio id="audioPlayer">
+</div>
+
+<script>
+// 1. 随机动漫背景
+fetch("https://api.btstu.cn/sjbz/api.php?lx=dongman&format=json")
+.then(res=>res.json())
+.then(bg=>{
+    document.body.style.backgroundImage = `url(${bg.imgurl})`;
+})
+
+// 2. 实时时间
+function upTime(){
+    let now = new Date();
+    let y = now.getFullYear();
+    let m = now.getMonth()+1;
+    let d = now.getDate();
+    let h = now.getHours().toString().padStart(2,'0');
+    let mi = now.getMinutes().toString().padStart(2,'0');
+    let s = now.getSeconds().toString().padStart(2,'0');
+    let week = ['周日','周一','周二','周三','周四','周五','周六'][now.getDay()];
+    document.getElementById("now-time").innerText =
+        `🕒 ${y}年${m}月${d}日 ${h}:${mi}:${s} ${week}`;
+}
+upTime();
+setInterval(upTime,1000);
+
+// 3. IP属地
+fetch("https://api.ip.sb/geoip")
+.then(res=>res.json())
+.then(ip=>{
+    document.getElementById("user-area").innerText =
+        `🌍 你的位置：${ip.isp} | ${ip.city}`;
+})
+
+// 4. 访问统计
+fetch("https://api.uomg.com/api/count?name=oyyynb-site")
+.then(res=>res.json())
+.then(c=>{
+    document.getElementById("visit-count").innerText =
+        `👁️ 本站总访问：${c.count} 次`;
+})
+
+// 5. 每日一言
+fetch("https://api.btstu.cn/yan/api.php?format=json")
+.then(res=>res.json())
+.then(art=>{
+    document.getElementById("yan").innerText = `📜 ${art.text}`;
+})
+
+
+// ========== 音乐播放器核心 ==========
+const audio = document.getElementById('audioPlayer');
+const songNameDom = document.getElementById('songName');
+const playBtn = document.getElementById('playBtn');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+let musicList = [];
+let nowIndex = 0;
+let isPlay = false;
+
+// 获取随机歌单接口
+async function getMusic(){
+    let res = await fetch("https://api.uomg.com/api/rand.music?format=json");
+    let data = await res.json();
+    musicList.push(data.data);
+    loadMusic(0);
+}
+
+function loadMusic(idx){
+    let m = musicList[idx];
+    audio.src = m.url;
+    songNameDom.innerText = '🎵 ' + m.name + ' - ' + m.artist;
+}
+
+// 播放暂停
+playBtn.onclick = function(){
+    if(isPlay){
+        audio.pause();
+        playBtn.innerText = "播放";
+        isPlay = false;
+    }else{
+        audio.play();
+        playBtn.innerText = "暂停";
+        isPlay = true;
+    }
+}
+
+// 下一首
+nextBtn.onclick = async function(){
+    let res = await fetch("https://api.uomg.com/api/rand.music?format=json");
+    let data = await res.json();
+    musicList.push(data.data);
+    nowIndex = musicList.length - 1;
+    loadMusic(nowIndex);
+    if(isPlay) audio.play();
+}
+
+// 上一首
+prevBtn.onclick = function(){
+    if(nowIndex <= 0) return;
+    nowIndex--;
+    loadMusic(nowIndex);
+    if(isPlay) audio.play();
+}
+
+// 自动切下一首
+audio.addEventListener('ended',()=>{
+    nextBtn.click();
+});
+
+// 初始化加载歌曲
+getMusic();
+</script>
+
 </body>
 </html>
