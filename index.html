@@ -8,6 +8,7 @@
         *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif;}
         body{
             min-height:100vh;
+            background:#333; /* 兜底灰色，避免接口挂了一片白 */
             background-size:cover;
             background-position:center;
             background-attachment:fixed;
@@ -15,7 +16,11 @@
             padding:4rem 1rem 8rem;
             transition:background 0.6s ease;
         }
-        .mask{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:-1;}
+        .mask{
+            position:fixed;inset:0;
+            background:rgba(0,0,0,0.45);
+            z-index:-1;
+        }
         nav{
             position:fixed;top:0;left:0;width:100%;
             background:rgba(0,0,0,0.55);
@@ -35,6 +40,7 @@
             border:none;color:#fff;
             width:36px;height:36px;
             border-radius:50%;cursor:pointer;
+            z-index:100;
         }
         .container{max-width:700px;margin:0 auto;text-align:center;animation:fadeIn 1.5s ease;}
         @keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
@@ -76,6 +82,7 @@
             backdrop-filter:blur(12px);
             padding:12px 20px;
             display:flex;align-items:center;justify-content:center;gap:15px;
+            z-index:99;
         }
         .music-name{max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
         .music-btn{background:#fff;color:#222;border:none;border-radius:20px;padding:4px 12px;cursor:pointer;}
@@ -132,12 +139,17 @@
 </div>
 
 <script>
-// 随机背景
+// 1. 稳定版随机背景（加了兜底灰色）
 fetch("https://api.btstu.cn/sjbz/api.php?lx=dongman&format=json")
 .then(res=>res.json())
-.then(bg=>document.body.style.backgroundImage=`url(${bg.imgurl})`);
+.then(bg=>{
+    document.body.style.backgroundImage = `url(${bg.imgurl})`;
+})
+.catch(()=>{
+    console.log("背景加载失败，使用兜底灰色背景");
+});
 
-// 实时时间
+// 2. 实时时间
 function upTime(){
     let n=new Date();
     let y=n.getFullYear(),m=n.getMonth()+1,d=n.getDate();
@@ -149,29 +161,44 @@ function upTime(){
 }
 upTime();setInterval(upTime,1000);
 
-// 访客属地
+// 3. 访客属地（加错误兜底）
 fetch("https://api.ip.sb/geoip")
 .then(res=>res.json())
-.then(ip=>document.getElementById("user-area").innerText=`🌍 你的位置：${ip.isp} | ${ip.city}`);
+.then(ip=>{
+    document.getElementById("user-area").innerText=`🌍 你的位置：${ip.isp} | ${ip.city}`;
+})
+.catch(()=>{
+    document.getElementById("user-area").innerText=`🌍 位置信息加载失败`;
+});
 
-// 访问统计
+// 4. 访问统计（加错误兜底）
 fetch("https://api.uomg.com/api/count?name=oyyynb-site")
 .then(res=>res.json())
-.then(c=>document.getElementById("visit-count").innerText=`👁️ 本站总访问：${c.count} 次`);
+.then(c=>{
+    document.getElementById("visit-count").innerText=`👁️ 本站总访问：${c.count} 次`;
+})
+.catch(()=>{
+    document.getElementById("visit-count").innerText=`👁️ 访问统计加载失败`;
+});
 
-// 每日一言
+// 5. 每日一言（加错误兜底）
 fetch("https://api.btstu.cn/yan/api.php?format=json")
 .then(res=>res.json())
-.then(art=>document.getElementById("yan").innerText=`📜 ${art.text}`);
+.then(art=>{
+    document.getElementById("yan").innerText=`📜 ${art.text}`;
+})
+.catch(()=>{
+    document.getElementById("yan").innerText=`📜 语录加载失败`;
+});
 
-// 暗黑模式
+// 6. 暗黑模式
 const themeToggle=document.getElementById('themeToggle');
 themeToggle.onclick=()=>{
     document.body.classList.toggle('dark-mode');
     themeToggle.innerText=document.body.classList.contains('dark-mode')?'☀️':'🌙';
 }
 
-// ========== 音乐播放器 ==========
+// ========== 7. 音乐播放器（换了更稳的接口+错误处理） ==========
 const audio=document.getElementById('audioPlayer');
 const songNameDom=document.getElementById('songName');
 const playBtn=document.getElementById('playBtn');
@@ -180,35 +207,65 @@ const nextBtn=document.getElementById('nextBtn');
 let musicList=[],nowIndex=0,isPlay=false;
 
 async function getMusic(){
-    let res=await fetch("https://api.uomg.com/api/rand.music?format=json");
-    let data=await res.json();
-    musicList.push(data.data);loadMusic(0);
+    try{
+        let res=await fetch("https://api.uomg.com/api/rand.music?sort=热歌榜&format=json");
+        let data=await res.json();
+        musicList.push(data.data);
+        loadMusic(0);
+    }catch(e){
+        songNameDom.innerText='🎵 歌曲加载失败，请重试';
+    }
 }
 function loadMusic(idx){
     let m=musicList[idx];
-    audio.src=m.url;songNameDom.innerText='🎵 '+m.name+' - '+m.artist;
+    audio.src=m.url;
+    songNameDom.innerText='🎵 '+m.name+' - '+m.artist;
 }
 playBtn.onclick=()=>{
-    isPlay? (audio.pause(),playBtn.innerText="播放",isPlay=false)
-          : (audio.play(),playBtn.innerText="暂停",isPlay=true);
+    if(isPlay){
+        audio.pause();
+        playBtn.innerText="播放";
+        isPlay=false;
+    }else{
+        audio.play().then(()=>{
+            playBtn.innerText="暂停";
+            isPlay=true;
+        }).catch(()=>{
+            songNameDom.innerText='🎵 无法播放，请重试';
+        });
+    }
 }
 nextBtn.onclick=async ()=>{
-    let res=await fetch("https://api.uomg.com/api/rand.music?format=json");
-    let data=await res.json();
-    musicList.push(data.data);
-    nowIndex=musicList.length-1;loadMusic(nowIndex);
-    if(isPlay) audio.play();
+    try{
+        let res=await fetch("https://api.uomg.com/api/rand.music?sort=热歌榜&format=json");
+        let data=await res.json();
+        musicList.push(data.data);
+        nowIndex=musicList.length-1;
+        loadMusic(nowIndex);
+        if(isPlay) audio.play();
+    }catch(e){
+        songNameDom.innerText='🎵 歌曲加载失败，请重试';
+    }
 }
-prevBtn.onclick=()=>{if(nowIndex>0) nowIndex--,loadMusic(nowIndex),isPlay&&audio.play();}
+prevBtn.onclick=()=>{
+    if(nowIndex>0){
+        nowIndex--;
+        loadMusic(nowIndex);
+        if(isPlay) audio.play();
+    }
+}
 audio.addEventListener('ended',()=>nextBtn.click());
 getMusic();
 
-// ========== 鼠标点击粒子特效 ==========
+// ========== 8. 鼠标点击粒子特效（调整层级+优化） ==========
 const canvas=document.getElementById('particles');
 const ctx=canvas.getContext('2d');
 let w=canvas.width=window.innerWidth;
 let h=canvas.height=window.innerHeight;
-window.onresize=()=>w=canvas.width=innerWidth,h=canvas.height=innerHeight;
+window.onresize=()=>{
+    w=canvas.width=window.innerWidth;
+    h=canvas.height=window.innerHeight;
+};
 
 class Particle{
     constructor(x,y){
@@ -232,14 +289,18 @@ class Particle{
 }
 let particles=[];
 canvas.onclick=e=>{
-    for(let i=0;i<20;i++) particles.push(new Particle(e.clientX,e.clientY));
+    for(let i=0;i<20;i++){
+        particles.push(new Particle(e.clientX,e.clientY));
+    }
 }
 function animate(){
     ctx.clearRect(0,0,w,h);
     for(let i=particles.length-1;i>=0;i--){
         particles[i].draw();
         particles[i].update();
-        if(particles[i].alpha<=0) particles.splice(i,1);
+        if(particles[i].alpha<=0){
+            particles.splice(i,1);
+        }
     }
     requestAnimationFrame(animate);
 }
