@@ -157,9 +157,16 @@ function upTime(){
 }
 upTime();setInterval(upTime,1000);
 
-// 2. 访客属地（备用方案：不依赖接口，直接显示提示）
-document.getElementById("user-area").innerText=`🌍 你的位置：本地网络（隐藏保护）`;
-
+// 2. 访客属地（恢复原来可用的接口）
+fetch("https://api.ip.sb/geoip")
+.then(res=>res.json())
+.then(ip=>{
+    document.getElementById("user-area").innerText=`🌍 你的位置：${ip.isp} | ${ip.city}`;
+})
+.catch(()=>{
+    document.getElementById("user-area").innerText=`🌍 位置信息加载失败`;
+});
+    
 // 3. 访问统计（本地Cookie实现，永久可用）
 function countVisit(){
     let count = localStorage.getItem('visitCount') || 0;
@@ -198,8 +205,16 @@ const nextBtn=document.getElementById('nextBtn');
 
 // 本地歌单（可自行替换成你的MP3地址）
 const playlist = [
-    {name:"示例歌曲1", artist:"未知歌手", url:""},
-    {name:"示例歌曲2", artist:"未知歌手", url:""}
+  {
+    name: "晴天",
+    artist: "周杰伦",
+    url: "https://example.com/qingtian.mp3"
+  },
+  {
+    name: "七里香",
+    artist: "周杰伦",
+    url: "https://example.com/qilixiang.mp3"
+  }
 ];
 let nowIndex=0,isPlay=false;
 
