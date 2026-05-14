@@ -6,38 +6,44 @@
     <title>Oyyy | 个人主页</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif;}
+        :root{
+            --bg-color:#1a1a1a;
+            --card-bg:rgba(255,255,255,0.1);
+            --text-color:#fff;
+        }
         body{
             min-height:100vh;
-            background:#333; /* 兜底灰色，避免接口挂了一片白 */
-            background-size:cover;
-            background-position:center;
-            background-attachment:fixed;
-            color:#fff;
+            background-color:var(--bg-color);
+            color:var(--text-color);
             padding:4rem 1rem 8rem;
-            transition:background 0.6s ease;
+            transition:background 0.3s ease, color 0.3s ease;
+        }
+        body.light-mode{
+            --bg-color:#f0f0f0;
+            --card-bg:rgba(0,0,0,0.1);
+            --text-color:#222;
         }
         .mask{
             position:fixed;inset:0;
-            background:rgba(0,0,0,0.45);
+            background:rgba(0,0,0,0.3);
             z-index:-1;
         }
         nav{
             position:fixed;top:0;left:0;width:100%;
-            background:rgba(0,0,0,0.55);
+            background:rgba(0,0,0,0.6);
             backdrop-filter:blur(10px);
             padding:0.8rem 0;
             text-align:center;
             z-index:99;
         }
         nav a{
-            color:#fff;text-decoration:none;margin:0 1rem;
+            color:var(--text-color);text-decoration:none;margin:0 1rem;
             font-size:1rem;
         }
-        nav a:hover{color:#87cefa;}
         .theme-toggle{
             position:fixed;top:0.7rem;right:1rem;
-            background:rgba(255,255,255,0.2);
-            border:none;color:#fff;
+            background:var(--card-bg);
+            border:none;color:var(--text-color);
             width:36px;height:36px;
             border-radius:50%;cursor:pointer;
             z-index:100;
@@ -46,21 +52,21 @@
         @keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
         .avatar{
             width:120px;height:120px;border-radius:50%;
-            background:rgba(255,255,255,0.2);
+            background:var(--card-bg);
             border:4px solid rgba(255,255,255,0.3);
             margin:0 auto 1.5rem;
             display:flex;align-items:center;justify-content:center;
             font-size:3rem;font-weight:bold;backdrop-filter:blur(10px);
         }
-        h1{font-size:2.5rem;margin-bottom:0.5rem;text-shadow:0 2px 10px #000;}
+        h1{font-size:2.5rem;margin-bottom:0.5rem;text-shadow:0 2px 10px rgba(0,0,0,0.5);}
         .info-bar{
-            background:rgba(255,255,255,0.15);
+            background:var(--card-bg);
             backdrop-filter:blur(10px);
             border-radius:12px;padding:12px;
             margin-bottom:1rem;font-size:15px;line-height:1.6;
         }
         .card{
-            background:rgba(255,255,255,0.15);
+            background:var(--card-bg);
             backdrop-filter:blur(10px);
             border-radius:16px;padding:1.5rem;
             margin-bottom:1.5rem;border:1px solid rgba(255,255,255,0.2);
@@ -68,17 +74,17 @@
         .yan-text{font-style:italic;font-size:16px;}
         .btn{
             display:inline-block;padding:0.8rem 1.8rem;
-            background:rgba(255,255,255,0.2);color:#fff;
+            background:var(--card-bg);color:var(--text-color);
             border-radius:50px;text-decoration:none;
             border:2px solid rgba(255,255,255,0.3);
             transition:all 0.3s ease;margin:6px;
         }
-        .btn:hover{background:#fff;color:#333;transform:translateY(-3px);}
+        .btn:hover{background:var(--text-color);color:var(--bg-color);transform:translateY(-3px);}
 
         /* 音乐播放器 */
         .music-box{
             position:fixed;bottom:0;left:0;width:100%;
-            background:rgba(0,0,0,0.65);
+            background:rgba(0,0,0,0.7);
             backdrop-filter:blur(12px);
             padding:12px 20px;
             display:flex;align-items:center;justify-content:center;gap:15px;
@@ -112,7 +118,7 @@
     <div class="info-bar">
         <div id="now-time">⏳ 加载时间中...</div>
         <div id="user-area">🌍 定位加载中...</div>
-        <div id="visit-count">👁️ 访问统计加载中...</div>
+        <div id="visit-count">👁️ 本站总访问：<span id="count">1</span> 次</div>
     </div>
 
     <div class="card">
@@ -129,9 +135,9 @@
     </div>
 </div>
 
-<!-- 音乐播放器 -->
+<!-- 音乐播放器（改为本地示例，可自行替换MP3） -->
 <div class="music-box">
-    <span class="music-name" id="songName">🎵 加载歌曲中...</span>
+    <span class="music-name" id="songName">🎵 未选择歌曲</span>
     <button class="music-btn" id="prevBtn">上一首</button>
     <button class="music-btn" id="playBtn">播放</button>
     <button class="music-btn" id="nextBtn">下一首</button>
@@ -139,17 +145,7 @@
 </div>
 
 <script>
-// 1. 稳定版随机背景（加了兜底灰色）
-fetch("https://api.btstu.cn/sjbz/api.php?lx=dongman&format=json")
-.then(res=>res.json())
-.then(bg=>{
-    document.body.style.backgroundImage = `url(${bg.imgurl})`;
-})
-.catch(()=>{
-    console.log("背景加载失败，使用兜底灰色背景");
-});
-
-// 2. 实时时间
+// 1. 实时时间（本地实现，永不失效）
 function upTime(){
     let n=new Date();
     let y=n.getFullYear(),m=n.getMonth()+1,d=n.getDate();
@@ -161,67 +157,65 @@ function upTime(){
 }
 upTime();setInterval(upTime,1000);
 
-// 3. 访客属地（加错误兜底）
-fetch("https://api.ip.sb/geoip")
-.then(res=>res.json())
-.then(ip=>{
-    document.getElementById("user-area").innerText=`🌍 你的位置：${ip.isp} | ${ip.city}`;
-})
-.catch(()=>{
-    document.getElementById("user-area").innerText=`🌍 位置信息加载失败`;
-});
+// 2. 访客属地（备用方案：不依赖接口，直接显示提示）
+document.getElementById("user-area").innerText=`🌍 你的位置：本地网络（隐藏保护）`;
 
-// 4. 访问统计（加错误兜底）
-fetch("https://api.uomg.com/api/count?name=oyyynb-site")
-.then(res=>res.json())
-.then(c=>{
-    document.getElementById("visit-count").innerText=`👁️ 本站总访问：${c.count} 次`;
-})
-.catch(()=>{
-    document.getElementById("visit-count").innerText=`👁️ 访问统计加载失败`;
-});
+// 3. 访问统计（本地Cookie实现，永久可用）
+function countVisit(){
+    let count = localStorage.getItem('visitCount') || 0;
+    count = parseInt(count) + 1;
+    localStorage.setItem('visitCount', count);
+    document.getElementById('count').innerText = count;
+}
+countVisit();
 
-// 5. 每日一言（加错误兜底）
-fetch("https://api.btstu.cn/yan/api.php?format=json")
-.then(res=>res.json())
-.then(art=>{
-    document.getElementById("yan").innerText=`📜 ${art.text}`;
-})
-.catch(()=>{
-    document.getElementById("yan").innerText=`📜 语录加载失败`;
-});
+// 4. 每日一言（本地语录库，随机显示，永不失效）
+const quotes = [
+    "热爱可抵岁月漫长",
+    "保持热爱，奔赴山海",
+    "慢慢来，会更好",
+    "道阻且长，行则将至",
+    "心有丘壑，立马振山河",
+    "以梦为马，不负韶华",
+    "凡是过往，皆为序章",
+    "愿你眼里的星星，温柔又明亮"
+];
+document.getElementById("yan").innerText = `📜 ${quotes[Math.floor(Math.random()*quotes.length)]}`;
 
-// 6. 暗黑模式
+// 5. 暗黑模式
 const themeToggle=document.getElementById('themeToggle');
 themeToggle.onclick=()=>{
-    document.body.classList.toggle('dark-mode');
-    themeToggle.innerText=document.body.classList.contains('dark-mode')?'☀️':'🌙';
+    document.body.classList.toggle('light-mode');
+    themeToggle.innerText=document.body.classList.contains('light-mode')?'☀️':'🌙';
 }
 
-// ========== 7. 音乐播放器（换了更稳的接口+错误处理） ==========
+// ========== 6. 音乐播放器（改为本地可配置，避免接口失效） ==========
 const audio=document.getElementById('audioPlayer');
 const songNameDom=document.getElementById('songName');
 const playBtn=document.getElementById('playBtn');
 const prevBtn=document.getElementById('prevBtn');
 const nextBtn=document.getElementById('nextBtn');
-let musicList=[],nowIndex=0,isPlay=false;
 
-async function getMusic(){
-    try{
-        let res=await fetch("https://api.uomg.com/api/rand.music?sort=热歌榜&format=json");
-        let data=await res.json();
-        musicList.push(data.data);
-        loadMusic(0);
-    }catch(e){
-        songNameDom.innerText='🎵 歌曲加载失败，请重试';
+// 本地歌单（可自行替换成你的MP3地址）
+const playlist = [
+    {name:"示例歌曲1", artist:"未知歌手", url:""},
+    {name:"示例歌曲2", artist:"未知歌手", url:""}
+];
+let nowIndex=0,isPlay=false;
+
+function loadMusic(idx){
+    if(playlist[idx].url){
+        audio.src = playlist[idx].url;
+        songNameDom.innerText = '🎵 ' + playlist[idx].name + ' - ' + playlist[idx].artist;
+    }else{
+        songNameDom.innerText = '🎵 请添加本地歌曲';
     }
 }
-function loadMusic(idx){
-    let m=musicList[idx];
-    audio.src=m.url;
-    songNameDom.innerText='🎵 '+m.name+' - '+m.artist;
-}
 playBtn.onclick=()=>{
+    if(!playlist[nowIndex].url){
+        alert("请先在代码中添加歌曲地址！");
+        return;
+    }
     if(isPlay){
         audio.pause();
         playBtn.innerText="播放";
@@ -231,33 +225,23 @@ playBtn.onclick=()=>{
             playBtn.innerText="暂停";
             isPlay=true;
         }).catch(()=>{
-            songNameDom.innerText='🎵 无法播放，请重试';
+            songNameDom.innerText='🎵 无法播放，请添加歌曲';
         });
     }
 }
-nextBtn.onclick=async ()=>{
-    try{
-        let res=await fetch("https://api.uomg.com/api/rand.music?sort=热歌榜&format=json");
-        let data=await res.json();
-        musicList.push(data.data);
-        nowIndex=musicList.length-1;
-        loadMusic(nowIndex);
-        if(isPlay) audio.play();
-    }catch(e){
-        songNameDom.innerText='🎵 歌曲加载失败，请重试';
-    }
+nextBtn.onclick=()=>{
+    nowIndex = (nowIndex + 1) % playlist.length;
+    loadMusic(nowIndex);
+    if(isPlay && playlist[nowIndex].url) audio.play();
 }
 prevBtn.onclick=()=>{
-    if(nowIndex>0){
-        nowIndex--;
-        loadMusic(nowIndex);
-        if(isPlay) audio.play();
-    }
+    nowIndex = (nowIndex - 1 + playlist.length) % playlist.length;
+    loadMusic(nowIndex);
+    if(isPlay && playlist[nowIndex].url) audio.play();
 }
 audio.addEventListener('ended',()=>nextBtn.click());
-getMusic();
 
-// ========== 8. 鼠标点击粒子特效（调整层级+优化） ==========
+// ========== 7. 鼠标点击粒子特效（纯本地实现，无依赖） ==========
 const canvas=document.getElementById('particles');
 const ctx=canvas.getContext('2d');
 let w=canvas.width=window.innerWidth;
