@@ -5,138 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oyyy | 个人主页</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+        *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif;}
+        body{
+            min-height:100vh;
+            background-size:cover;
+            background-position:center;
+            background-attachment:fixed;
+            color:#fff;
+            padding:4rem 1rem 8rem;
+            transition:background 0.6s ease;
         }
+        .mask{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:-1;}
+        nav{
+            position:fixed;top:0;left:0;width:100%;
+            background:rgba(0,0,0,0.55);
+            backdrop-filter:blur(10px);
+            padding:0.8rem 0;
+            text-align:center;
+            z-index:99;
+        }
+        nav a{
+            color:#fff;text-decoration:none;margin:0 1rem;
+            font-size:1rem;
+        }
+        nav a:hover{color:#87cefa;}
+        .theme-toggle{
+            position:fixed;top:0.7rem;right:1rem;
+            background:rgba(255,255,255,0.2);
+            border:none;color:#fff;
+            width:36px;height:36px;
+            border-radius:50%;cursor:pointer;
+        }
+        .container{max-width:700px;margin:0 auto;text-align:center;animation:fadeIn 1.5s ease;}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+        .avatar{
+            width:120px;height:120px;border-radius:50%;
+            background:rgba(255,255,255,0.2);
+            border:4px solid rgba(255,255,255,0.3);
+            margin:0 auto 1.5rem;
+            display:flex;align-items:center;justify-content:center;
+            font-size:3rem;font-weight:bold;backdrop-filter:blur(10px);
+        }
+        h1{font-size:2.5rem;margin-bottom:0.5rem;text-shadow:0 2px 10px #000;}
+        .info-bar{
+            background:rgba(255,255,255,0.15);
+            backdrop-filter:blur(10px);
+            border-radius:12px;padding:12px;
+            margin-bottom:1rem;font-size:15px;line-height:1.6;
+        }
+        .card{
+            background:rgba(255,255,255,0.15);
+            backdrop-filter:blur(10px);
+            border-radius:16px;padding:1.5rem;
+            margin-bottom:1.5rem;border:1px solid rgba(255,255,255,0.2);
+        }
+        .yan-text{font-style:italic;font-size:16px;}
+        .btn{
+            display:inline-block;padding:0.8rem 1.8rem;
+            background:rgba(255,255,255,0.2);color:#fff;
+            border-radius:50px;text-decoration:none;
+            border:2px solid rgba(255,255,255,0.3);
+            transition:all 0.3s ease;margin:6px;
+        }
+        .btn:hover{background:#fff;color:#333;transform:translateY(-3px);}
 
-        body {
-            min-height: 100vh;
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: #fff;
-            padding: 2rem 1rem 8rem;
+        /* 音乐播放器 */
+        .music-box{
+            position:fixed;bottom:0;left:0;width:100%;
+            background:rgba(0,0,0,0.65);
+            backdrop-filter:blur(12px);
+            padding:12px 20px;
+            display:flex;align-items:center;justify-content:center;gap:15px;
         }
+        .music-name{max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        .music-btn{background:#fff;color:#222;border:none;border-radius:20px;padding:4px 12px;cursor:pointer;}
 
-        .mask {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.45);
-            z-index: -1;
-        }
-
-        .container {
-            max-width: 700px;
-            margin: 0 auto;
-            text-align: center;
-            animation: fadeIn 1.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            border: 4px solid rgba(255,255,255,0.3);
-            margin: 0 auto 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            font-weight: bold;
-            backdrop-filter: blur(10px);
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 2px 10px #000;
-        }
-
-        .info-bar {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 1rem;
-            font-size: 15px;
-            line-height: 1.6;
-        }
-
-        .card {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .yan-text {
-            font-style: italic;
-            font-size: 16px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 1.8rem;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border-radius: 50px;
-            text-decoration: none;
-            border: 2px solid rgba(255,255,255,0.3);
-            transition: all 0.3s ease;
-            margin: 6px;
-        }
-
-        .btn:hover {
-            background: #fff;
-            color: #333;
-            transform: translateY(-3px);
-        }
-
-        /* 底部悬浮音乐播放器 */
-        .music-box {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(0,0,0,0.65);
-            backdrop-filter: blur(12px);
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .music-name {
-            max-width: 180px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .music-btn {
-            background: #fff;
-            color: #222;
-            border: none;
-            border-radius: 20px;
-            padding: 4px 12px;
-            cursor: pointer;
-        }
+        /* 粒子画布 */
+        #particles{position:fixed;inset:0;pointer-events:none;z-index:1;}
     </style>
 </head>
 <body>
+<!-- 粒子特效画布 -->
+<canvas id="particles"></canvas>
+
 <div class="mask"></div>
+
+<!-- 顶部导航 -->
+<nav>
+    <a href="#">首页</a>
+    <a href="#">关于我</a>
+    <a href="#">项目</a>
+    <button class="theme-toggle" id="themeToggle">🌙</button>
+</nav>
 
 <div class="container">
     <div class="avatar">O</div>
@@ -162,7 +122,7 @@
     </div>
 </div>
 
-<!-- 底部音乐播放器 -->
+<!-- 音乐播放器 -->
 <div class="music-box">
     <span class="music-name" id="songName">🎵 加载歌曲中...</span>
     <button class="music-btn" id="prevBtn">上一首</button>
@@ -172,117 +132,118 @@
 </div>
 
 <script>
-// 1. 随机动漫背景
+// 随机背景
 fetch("https://api.btstu.cn/sjbz/api.php?lx=dongman&format=json")
 .then(res=>res.json())
-.then(bg=>{
-    document.body.style.backgroundImage = `url(${bg.imgurl})`;
-})
+.then(bg=>document.body.style.backgroundImage=`url(${bg.imgurl})`);
 
-// 2. 实时时间
+// 实时时间
 function upTime(){
-    let now = new Date();
-    let y = now.getFullYear();
-    let m = now.getMonth()+1;
-    let d = now.getDate();
-    let h = now.getHours().toString().padStart(2,'0');
-    let mi = now.getMinutes().toString().padStart(2,'0');
-    let s = now.getSeconds().toString().padStart(2,'0');
-    let week = ['周日','周一','周二','周三','周四','周五','周六'][now.getDay()];
-    document.getElementById("now-time").innerText =
-        `🕒 ${y}年${m}月${d}日 ${h}:${mi}:${s} ${week}`;
+    let n=new Date();
+    let y=n.getFullYear(),m=n.getMonth()+1,d=n.getDate();
+    let h=n.getHours().toString().padStart(2,'0');
+    let mi=n.getMinutes().toString().padStart(2,'0');
+    let s=n.getSeconds().toString().padStart(2,'0');
+    let week=['周日','周一','周二','周三','周四','周五','周六'][n.getDay()];
+    document.getElementById("now-time").innerText=`🕒 ${y}年${m}月${d}日 ${h}:${mi}:${s} ${week}`;
 }
-upTime();
-setInterval(upTime,1000);
+upTime();setInterval(upTime,1000);
 
-// 3. IP属地
+// 访客属地
 fetch("https://api.ip.sb/geoip")
 .then(res=>res.json())
-.then(ip=>{
-    document.getElementById("user-area").innerText =
-        `🌍 你的位置：${ip.isp} | ${ip.city}`;
-})
+.then(ip=>document.getElementById("user-area").innerText=`🌍 你的位置：${ip.isp} | ${ip.city}`);
 
-// 4. 访问统计
+// 访问统计
 fetch("https://api.uomg.com/api/count?name=oyyynb-site")
 .then(res=>res.json())
-.then(c=>{
-    document.getElementById("visit-count").innerText =
-        `👁️ 本站总访问：${c.count} 次`;
-})
+.then(c=>document.getElementById("visit-count").innerText=`👁️ 本站总访问：${c.count} 次`);
 
-// 5. 每日一言
+// 每日一言
 fetch("https://api.btstu.cn/yan/api.php?format=json")
 .then(res=>res.json())
-.then(art=>{
-    document.getElementById("yan").innerText = `📜 ${art.text}`;
-})
+.then(art=>document.getElementById("yan").innerText=`📜 ${art.text}`);
 
+// 暗黑模式
+const themeToggle=document.getElementById('themeToggle');
+themeToggle.onclick=()=>{
+    document.body.classList.toggle('dark-mode');
+    themeToggle.innerText=document.body.classList.contains('dark-mode')?'☀️':'🌙';
+}
 
-// ========== 音乐播放器核心 ==========
-const audio = document.getElementById('audioPlayer');
-const songNameDom = document.getElementById('songName');
-const playBtn = document.getElementById('playBtn');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
+// ========== 音乐播放器 ==========
+const audio=document.getElementById('audioPlayer');
+const songNameDom=document.getElementById('songName');
+const playBtn=document.getElementById('playBtn');
+const prevBtn=document.getElementById('prevBtn');
+const nextBtn=document.getElementById('nextBtn');
+let musicList=[],nowIndex=0,isPlay=false;
 
-let musicList = [];
-let nowIndex = 0;
-let isPlay = false;
-
-// 获取随机歌单接口
 async function getMusic(){
-    let res = await fetch("https://api.uomg.com/api/rand.music?format=json");
-    let data = await res.json();
-    musicList.push(data.data);
-    loadMusic(0);
+    let res=await fetch("https://api.uomg.com/api/rand.music?format=json");
+    let data=await res.json();
+    musicList.push(data.data);loadMusic(0);
 }
-
 function loadMusic(idx){
-    let m = musicList[idx];
-    audio.src = m.url;
-    songNameDom.innerText = '🎵 ' + m.name + ' - ' + m.artist;
+    let m=musicList[idx];
+    audio.src=m.url;songNameDom.innerText='🎵 '+m.name+' - '+m.artist;
 }
+playBtn.onclick=()=>{
+    isPlay? (audio.pause(),playBtn.innerText="播放",isPlay=false)
+          : (audio.play(),playBtn.innerText="暂停",isPlay=true);
+}
+nextBtn.onclick=async ()=>{
+    let res=await fetch("https://api.uomg.com/api/rand.music?format=json");
+    let data=await res.json();
+    musicList.push(data.data);
+    nowIndex=musicList.length-1;loadMusic(nowIndex);
+    if(isPlay) audio.play();
+}
+prevBtn.onclick=()=>{if(nowIndex>0) nowIndex--,loadMusic(nowIndex),isPlay&&audio.play();}
+audio.addEventListener('ended',()=>nextBtn.click());
+getMusic();
 
-// 播放暂停
-playBtn.onclick = function(){
-    if(isPlay){
-        audio.pause();
-        playBtn.innerText = "播放";
-        isPlay = false;
-    }else{
-        audio.play();
-        playBtn.innerText = "暂停";
-        isPlay = true;
+// ========== 鼠标点击粒子特效 ==========
+const canvas=document.getElementById('particles');
+const ctx=canvas.getContext('2d');
+let w=canvas.width=window.innerWidth;
+let h=canvas.height=window.innerHeight;
+window.onresize=()=>w=canvas.width=innerWidth,h=canvas.height=innerHeight;
+
+class Particle{
+    constructor(x,y){
+        this.x=x;this.y=y;
+        this.r=Math.random()*4+2;
+        this.dx=Math.random()*6-3;
+        this.dy=Math.random()*6-3;
+        this.alpha=1;
+    }
+    draw(){
+        ctx.beginPath();
+        ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+        ctx.fillStyle=`rgba(135,206,255,${this.alpha})`;
+        ctx.fill();
+    }
+    update(){
+        this.x+=this.dx;
+        this.y+=this.dy;
+        this.alpha-=0.02;
     }
 }
-
-// 下一首
-nextBtn.onclick = async function(){
-    let res = await fetch("https://api.uomg.com/api/rand.music?format=json");
-    let data = await res.json();
-    musicList.push(data.data);
-    nowIndex = musicList.length - 1;
-    loadMusic(nowIndex);
-    if(isPlay) audio.play();
+let particles=[];
+canvas.onclick=e=>{
+    for(let i=0;i<20;i++) particles.push(new Particle(e.clientX,e.clientY));
 }
-
-// 上一首
-prevBtn.onclick = function(){
-    if(nowIndex <= 0) return;
-    nowIndex--;
-    loadMusic(nowIndex);
-    if(isPlay) audio.play();
+function animate(){
+    ctx.clearRect(0,0,w,h);
+    for(let i=particles.length-1;i>=0;i--){
+        particles[i].draw();
+        particles[i].update();
+        if(particles[i].alpha<=0) particles.splice(i,1);
+    }
+    requestAnimationFrame(animate);
 }
-
-// 自动切下一首
-audio.addEventListener('ended',()=>{
-    nextBtn.click();
-});
-
-// 初始化加载歌曲
-getMusic();
+animate();
 </script>
-
 </body>
 </html>
