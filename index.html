@@ -1,309 +1,794 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oyyy | 个人主页</title>
+    <title>玻璃态导航页</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 后续CSS、JS写在这里 -->
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif;}
-        :root{
-            --bg-color:#1a1a1a;
-            --card-bg:rgba(255,255,255,0.1);
-            --text-color:#fff;
+        /* 暂时空着，下一节写玻璃样式 */
+        /* 全局重置，清除默认边距 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        body{
-            min-height:100vh;
-            background-color:var(--bg-color);
-            color:var(--text-color);
-            padding:4rem 1rem 8rem;
-            transition:background 0.3s ease, color 0.3s ease;
-        }
-        body.light-mode{
-            --bg-color:#f0f0f0;
-            --card-bg:rgba(0,0,0,0.1);
-            --text-color:#222;
-        }
-        .mask{
-            position:fixed;inset:0;
-            background:rgba(0,0,0,0.3);
-            z-index:-1;
-        }
-        nav{
-            position:fixed;top:0;left:0;width:100%;
-            background:rgba(0,0,0,0.6);
-            backdrop-filter:blur(10px);
-            padding:0.8rem 0;
-            text-align:center;
-            z-index:99;
-        }
-        nav a{
-            color:var(--text-color);text-decoration:none;margin:0 1rem;
-            font-size:1rem;
-        }
-        .theme-toggle{
-            position:fixed;top:0.7rem;right:1rem;
-            background:var(--card-bg);
-            border:none;color:var(--text-color);
-            width:36px;height:36px;
-            border-radius:50%;cursor:pointer;
-            z-index:100;
-        }
-        .container{max-width:700px;margin:0 auto;text-align:center;animation:fadeIn 1.5s ease;}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-        .avatar{
-            width:120px;height:120px;border-radius:50%;
-            background:var(--card-bg);
-            border:4px solid rgba(255,255,255,0.3);
-            margin:0 auto 1.5rem;
-            display:flex;align-items:center;justify-content:center;
-            font-size:3rem;font-weight:bold;backdrop-filter:blur(10px);
-        }
-        h1{font-size:2.5rem;margin-bottom:0.5rem;text-shadow:0 2px 10px rgba(0,0,0,0.5);}
-        .info-bar{
-            background:var(--card-bg);
-            backdrop-filter:blur(10px);
-            border-radius:12px;padding:12px;
-            margin-bottom:1rem;font-size:15px;line-height:1.6;
-        }
-        .card{
-            background:var(--card-bg);
-            backdrop-filter:blur(10px);
-            border-radius:16px;padding:1.5rem;
-            margin-bottom:1.5rem;border:1px solid rgba(255,255,255,0.2);
-        }
-        .yan-text{font-style:italic;font-size:16px;}
-        .btn{
-            display:inline-block;padding:0.8rem 1.8rem;
-            background:var(--card-bg);color:var(--text-color);
-            border-radius:50px;text-decoration:none;
-            border:2px solid rgba(255,255,255,0.3);
-            transition:all 0.3s ease;margin:6px;
-        }
-        .btn:hover{background:var(--text-color);color:var(--bg-color);transform:translateY(-3px);}
 
-        /* 音乐播放器 */
-        .music-box{
-            position:fixed;bottom:0;left:0;width:100%;
-            background:rgba(0,0,0,0.7);
-            backdrop-filter:blur(12px);
-            padding:12px 20px;
-            display:flex;align-items:center;justify-content:center;gap:15px;
-            z-index:99;
+        /* 页面占满全屏，禁止滚动 */
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            font-family: "微软雅黑", sans-serif;
         }
-        .music-name{max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-        .music-btn{background:#fff;color:#222;border:none;border-radius:20px;padding:4px 12px;cursor:pointer;}
 
-        /* 粒子画布 */
-        #particles{position:fixed;inset:0;pointer-events:none;z-index:1;}
+        /* 底层全屏背景容器 */
+        .bg-wrap {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("bg/1.jpg") center / cover no-repeat;
+            z-index: -1;
+
+            /* 叠加暗层，加深壁纸，玻璃效果更突出 */
+            &::after {
+                content: "";
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        /* 总容器，铺满屏幕，方便子元素绝对定位 */
+        .page-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            padding: 40px;
+        }
+
+        /* 1. 左侧信息面板：固定在页面左边 */
+        .left-panel {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            width: 180px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 2. 右上角时钟面板 */
+        .clock-panel {
+            position: absolute;
+            left: 50%;
+            top: 12%;
+            transform: translateX(-50%);
+            text-align: center;
+            padding: 0;
+            /* 强制清除所有边框、阴影、背景 */
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            border-radius: 0;
+        }
+
+        #time-text {
+            font-size: 36px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        #date-text {
+            font-size: 15px;
+            opacity: 0.85;
+            color: #fff;
+        }
+
+
+        /* 3. 中间导航卡片组，页面居中区域 */
+        .nav-card-group {
+            position: absolute;
+            left: 280px;
+            top: 68%;
+            transform: translateY(-50%);
+            width: calc(100% - 320px);
+            height: 320px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            /* 左右统一留12px空隙，上下10px，放大不会被切掉圆角 */
+            padding: 10px 12px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        /* 内部卡片网格布局：固定4列，自动换行 */
+        .nav-card-group {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        /* 美化滚动条（透明细条，贴合玻璃风格） */
+        .nav-card-group::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .nav-card-group::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 4px;
+        }
+
+        .nav-card-group::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        /* 4. 底部图标栏，页面左下角 */
+        .icon-bar {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            display: flex;
+            gap: 14px;
+        }
+
+        .icon-item {
+            width: 40px;
+            height: 40px;
+        }
+
+        /* 统一所有玻璃面板通用样式，一次性复用 */
+        .glass {
+            /* 提高白色透明度，从0.15改成0.22，更明显 */
+            background: rgba(255, 255, 255, 0.22);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            /* 边框反光更清晰 */
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+            color: #ffffff;
+            padding: 16px;
+        }
+
+        /* 给所有模块加上glass类，这里补充对应选择器 */
+        .left-panel>div {
+            width: 100%;
+        }
+
+
+        /* 单个导航卡片玻璃样式 */
+        .nav-card {
+            background: rgba(255, 255, 255, 0.13);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            /* 悬浮动画过渡 */
+            padding: 12px;
+        }
+
+        /* 鼠标悬浮卡片轻微放大提亮，和原图交互一致 */
+        .nav-card:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.22);
+        }
+
+        /* 底部小图标玻璃块 */
+        .icon-item {
+            background: rgba(255, 255, 255, 0.14);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .icon-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-4px);
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            font-family: "微软雅黑", sans-serif;
+            color: #fff;
+            /* 全局文字白色 */
+        }
+
+        /* 清除所有超链接默认样式 */
+        a {
+            text-decoration: none;
+            color: #fff;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        #time-text {
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        #date-text {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        /* 头像样式 */
+        .avatar-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* 标签容器布局 */
+        .tag-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .tag-item {
+            padding: 6px 8px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .card-desc {
+            font-size: 12px;
+            margin-top: 8px;
+            opacity: 0.75;
+        }
+
+        /* 卡片内部垂直布局 */
+        .nav-card {
+            height: 240px;
+            background: rgba(255, 255, 255, 0.13);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            padding: 0;
+            /* 取消整体内边距，图片贴满卡片顶部 */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            /* 图片圆角跟随卡片 */
+        }
+
+        /* 图片区域：占卡片65%高度 */
+        .card-img {
+            width: 100%;
+            height: 65%;
+        }
+
+        .card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* 图片不变形裁剪铺满 */
+            display: block;
+        }
+
+        /* 文字区域：剩余35%高度，居中留白 */
+        .card-text {
+            flex: 1;
+            padding: 8px 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .card-desc {
+            font-size: 12px;
+            opacity: 0.75;
+        }
+
+        /* 右上角播放器定位，原时钟位置 */
+        .music-panel {
+            position: absolute;
+            right: 40px;
+            top: 40px;
+            width: 220px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* 歌曲封面 */
+        .music-cover {
+            width: 100%;
+            height: 160px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .music-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 歌曲文字 */
+        .song-name {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .song-author {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        /* 播放按钮区 */
+        .music-control {
+            display: flex;
+            justify-content: space-around;
+            font-size: 20px;
+            padding: 4px 0;
+        }
+
+        .music-control i {
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .music-control i:hover {
+            opacity: 0.7;
+        }
+
+        /* 进度条 */
+        .music-progress {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+
+        .progress-bar {
+            width: 35%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 4px;
+        }
+
+        /* 遮罩弹窗 */
+        .wallpaper-modal {
+            display: none;
+            /* 默认隐藏 */
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 打开时才启用flex */
+        .wallpaper-modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 24px;
+            color: #fff;
+            width: 620px;
+        }
+
+        .wall-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .wall-item {
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .wall-item:hover {
+            border-color: #fff;
+        }
+
+        .wall-item img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .close-btn {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            margin-top: 8px;
+        }
     </style>
 </head>
+
 <body>
-<!-- 粒子特效画布 -->
-<canvas id="particles"></canvas>
+    <!-- 全屏背景容器 -->
+    <div class="bg-wrap"></div>
 
-<div class="mask"></div>
+    <!-- 整体页面容器，承载所有玻璃模块 -->
+    <div class="page-container">
 
-<!-- 顶部导航 -->
-<nav>
-    <a href="#">首页</a>
-    <a href="#">关于我</a>
-    <a href="#">项目</a>
-    <button class="theme-toggle" id="themeToggle">🌙</button>
-</nav>
+        <!-- 1. 左侧信息区域 -->
+        <div class="left-panel">
+            <!-- 头像区域 -->
+            <div class="avatar-box glass">
+                <img src="head.jpg" alt="头像" class="avatar-img">
+            </div>
+            <!-- 标签组 -->
+            <div class="tag-group glass">
+                <div class="tag-item">元神牛逼</div>
+                <div class="tag-item">巴巴博弈</div>
+                <div class="tag-item">比比拉布</div>
+                <div class="tag-item">厚厚礼谢</div>
+            </div>
+            <!-- 饼图占位 -->
 
-<div class="container">
-    <div class="avatar">O</div>
-    <h1>欢迎来到 Oyyy 个人主页</h1>
+        </div>
 
-    <div class="info-bar">
-        <div id="now-time">⏳ 加载时间中...</div>
-        <div id="user-area">🌍 定位加载中...</div>
-        <div id="visit-count">👁️ 本站总访问：<span id="count">1</span> 次</div>
+        <!-- 2. 右上角时钟小组件 -->
+        <div class="clock-panel">
+            <div id="time-text">时分秒</div>
+            <div id="date-text">年月日星期</div>
+        </div>
+
+        <!-- 3. 中间主导航卡片区（用来放B站、抖音等入口） -->
+        <div class="nav-card-group">
+            <!-- 第一行 -->
+            <a href="https://bilibili.com" target="_blank" class="nav-card">
+                <div class="card-img"><img src="bg/2.jpeg" alt="B站"></div>
+                <div class="card-text">
+                    <div class="card-title">B站</div>
+                    <div class="card-desc">追番看视频</div>
+                </div>
+            </a>
+            <a href="https://douyin.com" target="_blank" class="nav-card">
+                <div class="card-img"><img src="bg/3.jpg" alt="抖音"></div>
+                <div class="card-text">
+                    <div class="card-title">抖音网页版</div>
+                    <div class="card-desc">短视频平台</div>
+                </div>
+            </a>
+            <a href="https://music.163.com" target="_blank" class="nav-card">
+                <div class="card-img"><img src="bg/4.jpg" alt="网易云"></div>
+                <div class="card-text">
+                    <div class="card-title">网易云音乐</div>
+                    <div class="card-desc">在线听歌</div>
+                </div>
+            </a>
+            <a href="https://ani.gamer.com.tw/" target="_blank" class="nav-card">
+                <div class="card-img"><img src="bg/5.jpg" alt="番剧"></div>
+                <div class="card-text">
+                    <div class="card-title">动漫番剧站</div>
+                    <div class="card-desc">新番动漫资源</div>
+                </div>
+            </a>
+
+            <!-- 第二行 -->
+            <a href="https://github.com" target="_blank" class="nav-card">
+                <div class="card-img"><img src="bg/6.jpeg" alt="Github"></div>
+                <div class="card-text">
+                    <div class="card-title">Github仓库</div>
+                    <div class="card-desc">代码托管平台</div>
+                </div>
+            </a>
+            <a href="https://pan.baidu.com" target="_blank" class="nav-card">
+                <div class="card-img"><img src="bg/7.jpeg" alt="网盘"></div>
+                <div class="card-text">
+                    <div class="card-title">百度网盘</div>
+                    <div class="card-desc">文件存储</div>
+                </div>
+            </a>
+            <a href="https://www.baidu.com" target="_blank" class="nav-card">
+                <div class="card-img"><img src="bg/8.png" alt="百度"></div>
+                <div class="card-text">
+                    <div class="card-title">百度搜索</div>
+                    <div class="card-desc">全网检索</div>
+                </div>
+            </a>
+            <a href="https://mail.qq.com" target="_blank" class="nav-card">
+                <div class="card-img"><img src="bg/9.jpeg" alt="邮箱"></div>
+                <div class="card-text">
+                    <div class="card-title">QQ邮箱</div>
+                    <div class="card-desc">收发邮件</div>
+                </div>
+            </a>
+
+            <!-- 第三行 -->
+            <a href="https://www.notion.so/" target="_blank" class="nav-card">
+                <div class="card-img"><img src="bg/10.jpg" alt="笔记"></div>
+                <div class="card-text">
+                    <div class="card-title">Notion笔记</div>
+                    <div class="card-desc">在线文档整理</div>
+                </div>
+            </a>
+            <a href="https://pixiv.net" target="_blank" class="nav-card">
+                <div class="card-img"><img src="bg/10.jpg" alt="插画"></div>
+                <div class="card-text">
+                    <div class="card-title">Pixiv插画</div>
+                    <div class="card-desc">二次元绘画图库</div>
+                </div>
+            </a>
+            <a href="https://steamcommunity.com/" target="_blank" class="nav-card">
+                <div class="card-img"><img src="bg/10.jpg" alt="Steam"></div>
+                <div class="card-text">
+                    <div class="card-title">Steam社区</div>
+                    <div class="card-desc">游戏平台</div>
+                </div>
+            </a>
+            <a href="https://www.weather.com/" target="_blank" class="nav-card">
+                <div class="card-img"><img src="bg/10.jpg" alt="天气"></div>
+                <div class="card-text">
+                    <div class="card-title">天气查询</div>
+                    <div class="card-desc">实时天气预报</div>
+                </div>
+            </a>
+        </div>
+
+        <!-- 4. 底部快捷图标栏 -->
+        <div class="icon-bar">
+            <a href="javascript:;" id="settingBtn" class="icon-item">
+                <i class="fa-solid fa-gear"></i>
+            </a>
+            <a href="https://im.qq.com/" target="_blank" class="icon-item">
+                <i class="fa-brands fa-qq"></i>
+            </a>
+            <a href="https://space.bilibili.com/3546704290777845?spm_id_from=333.1007.0.0" target="_blank"
+                class="icon-item">
+                <i class="fa-brands fa-bilibili"></i>
+            </a>
+            <a href="https://www.douyin.com/user/MS4wLjABAAAA3mj7s6Z8dt6CvpM6pYhBEy12CXCmXNNFbIVak_ydsnI?from_tab_name=main"
+                target="_blank" class="icon-item">
+                <i class="fa-brands fa-tiktok"></i>
+            </a>
+        </div>
+        <!-- 右上角音乐播放器 -->
+        <div class="music-panel glass">
+            <div class="music-cover">
+                <img id="cover-img" src="bg/1.jpg" alt="歌曲封面">
+            </div>
+            <div class="music-info">
+                <div id="song-name" class="song-name">晚风</div>
+                <div id="song-author" class="song-author">歌手</div>
+            </div>
+            <div class="music-control">
+                <i class="fa-solid fa-backward prev-btn"></i>
+                <i class="fa-solid fa-play play-btn"></i>
+                <i class="fa-solid fa-forward next-btn"></i>
+            </div>
+            <div class="music-progress">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+        <audio id="audio-player">
+
     </div>
-
-    <div class="card">
-        <p class="yan-text" id="yan">📜 正在加载今日语录...</p>
+    <!-- 壁纸设置弹窗 -->
+    <div class="wallpaper-modal" id="wallpaperModal">
+        <div class="modal-content">
+            <h3>选择壁纸</h3>
+            <div class="wall-list">
+                <!-- 在这里添加你的壁纸预览图，自行增加 -->
+                <div class="wall-item" data-bg="bg/1.jpg">
+                    <img src="bg/1.jpg" alt="壁纸1">
+                </div>
+                <div class="wall-item" data-bg="bg/3.jpg">
+                    <img src="bg/3.jpg" alt="壁纸2">
+                </div>
+                <div class="wall-item" data-bg="bg/6.jpeg">
+                    <img src="bg/6.jpeg" alt="壁纸3">
+                </div>
+                <div class="wall-item" data-bg="bg/7.jpeg">
+                    <img src="bg/7.jpeg" alt="壁纸3">
+                </div>
+                <div class="wall-item" data-bg="bg/9.jpeg">
+                    <img src="bg/9.jpeg" alt="壁纸3">
+                </div>
+            </div>
+            <button class="close-btn">关闭</button>
+        </div>
     </div>
+    <!-- 音频核心，页面看不见，负责发声，不能删 -->
+    <audio id="audio-player">
+        <script>
+            // 定义更新时间函数
+            function updateClock() {
+                // 获取当前系统时间
+                const now = new Date();
 
-    <div class="card">
-        <h3>👋 关于我</h3>
-        <p>元神nb</p>
-    </div>
+                // 提取 时、分、秒
+                let hour = now.getHours();
+                let minute = now.getMinutes();
+                let second = now.getSeconds();
 
-    <div>
-        <a href="https://github.com/oyyy6b" class="btn">我的 GitHub</a>
-    </div>
-</div>
+                // 提取 年、月、日、星期
+                const year = now.getFullYear();
+                const month = now.getMonth() + 1; // 月份从0开始，要+1
+                const day = now.getDate();
+                const weekArr = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+                const week = weekArr[now.getDay()];
 
-<!-- 音乐播放器（改为本地示例，可自行替换MP3） -->
-<div class="music-box">
-    <span class="music-name" id="songName">🎵 未选择歌曲</span>
-    <button class="music-btn" id="prevBtn">上一首</button>
-    <button class="music-btn" id="playBtn">播放</button>
-    <button class="music-btn" id="nextBtn">下一首</button>
-    <audio id="audioPlayer">
-</div>
+                // 补零函数：数字小于10前面加0，比如 9秒 → 09
+                function addZero(num) {
+                    return num < 10 ? "0" + num : num;
+                }
 
-<script>
-// 1. 实时时间（本地实现，永不失效）
-function upTime(){
-    let n=new Date();
-    let y=n.getFullYear(),m=n.getMonth()+1,d=n.getDate();
-    let h=n.getHours().toString().padStart(2,'0');
-    let mi=n.getMinutes().toString().padStart(2,'0');
-    let s=n.getSeconds().toString().padStart(2,'0');
-    let week=['周日','周一','周二','周三','周四','周五','周六'][n.getDay()];
-    document.getElementById("now-time").innerText=`🕒 ${y}年${m}月${d}日 ${h}:${mi}:${s} ${week}`;
-}
-upTime();setInterval(upTime,1000);
+                // 拼接格式化文本
+                const timeStr = `${addZero(hour)}:${addZero(minute)}:${addZero(second)}`;
+                const dateStr = `${year}年${addZero(month)}月${addZero(day)}日 ${week}`;
 
-// 2. 访客属地（恢复原来可用的接口）
-fetch("https://api.ip.sb/geoip")
-.then(res=>res.json())
-.then(ip=>{
-    document.getElementById("user-area").innerText=`🌍 你的位置：${ip.isp} | ${ip.city}`;
-})
-.catch(()=>{
-    document.getElementById("user-area").innerText=`🌍 位置信息加载失败`;
-});
-    
-// 3. 访问统计（本地Cookie实现，永久可用）
-function countVisit(){
-    let count = localStorage.getItem('visitCount') || 0;
-    count = parseInt(count) + 1;
-    localStorage.setItem('visitCount', count);
-    document.getElementById('count').innerText = count;
-}
-countVisit();
+                // 把文字渲染到页面
+                document.getElementById("time-text").innerText = timeStr;
+                document.getElementById("date-text").innerText = dateStr;
+            }
 
-// 4. 每日一言（本地语录库，随机显示，永不失效）
-const quotes = [
-    "热爱可抵岁月漫长",
-    "保持热爱，奔赴山海",
-    "慢慢来，会更好",
-    "道阻且长，行则将至",
-    "心有丘壑，立马振山河",
-    "以梦为马，不负韶华",
-    "凡是过往，皆为序章",
-    "愿你眼里的星星，温柔又明亮"
-];
-document.getElementById("yan").innerText = `📜 ${quotes[Math.floor(Math.random()*quotes.length)]}`;
+            // 页面加载立刻执行一次时钟
+            updateClock();
+            // 每1000毫秒(1秒)自动刷新一次
+            setInterval(updateClock, 1000);
 
-// 5. 暗黑模式
-const themeToggle=document.getElementById('themeToggle');
-themeToggle.onclick=()=>{
-    document.body.classList.toggle('light-mode');
-    themeToggle.innerText=document.body.classList.contains('light-mode')?'☀️':'🌙';
-}
+            // 歌曲列表，新增歌曲直接在这里加对象
+            // 歌曲列表，自行修改路径、歌名、歌手
+            // 歌曲列表，自行修改文件路径、歌名、歌手
+            const songList = [
+                {
+                    src: "music/Vuxa - 暮春.mp3",
+                    cover: "bg/1.jpg",
+                    name: "暮春",
+                    author: "Vuxa"
+                },
+                {
+                    src: "music/K7 - 我撕裂我的身体.mp3",
+                    cover: "bg/1.jpg",
+                    name: "我撕裂我的身体",
+                    author: "K7"
+                }
+            ];
 
-// ========== 6. 音乐播放器（改为本地可配置，避免接口失效） ==========
-const audio=document.getElementById('audioPlayer');
-const songNameDom=document.getElementById('songName');
-const playBtn=document.getElementById('playBtn');
-const prevBtn=document.getElementById('prevBtn');
-const nextBtn=document.getElementById('nextBtn');
+            // 当前播放下标
+            let currentIndex = 0;
 
-// 本地歌单（可自行替换成你的MP3地址）
-const playlist = [
-  {
-    name: "暮春",
-    artist: "Vuxa",
-    url: "Vuxa - 暮春.mp3"
-  },
-  {
-    name: "我撕裂我的身体",
-    artist: "K7",
-    url: "K7 - 我撕裂我的身体.mp3"
-  }
-];
-let nowIndex=0,isPlay=false;
+            // 一次性获取所有页面元素（仅声明一次，无重复变量报错）
+            const audio = document.getElementById('audio-player');
+            const coverImg = document.getElementById('cover-img');
+            const songName = document.getElementById('song-name');
+            const songAuthor = document.getElementById('song-author');
+            const playBtn = document.querySelector('.play-btn');
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            const progressBar = document.querySelector('.progress-bar');
 
-function loadMusic(idx){
-    if(playlist[idx].url){
-        audio.src = playlist[idx].url;
-        songNameDom.innerText = '🎵 ' + playlist[idx].name + ' - ' + playlist[idx].artist;
-    }else{
-        songNameDom.innerText = '🎵 请添加本地歌曲';
-    }
-}
-playBtn.onclick=()=>{
-    if(!playlist[nowIndex].url){
-        alert("请先在代码中添加歌曲地址！");
-        return;
-    }
-    if(isPlay){
-        audio.pause();
-        playBtn.innerText="播放";
-        isPlay=false;
-    }else{
-        audio.play().then(()=>{
-            playBtn.innerText="暂停";
-            isPlay=true;
-        }).catch(()=>{
-            songNameDom.innerText='🎵 无法播放，请添加歌曲';
-        });
-    }
-}
-nextBtn.onclick=()=>{
-    nowIndex = (nowIndex + 1) % playlist.length;
-    loadMusic(nowIndex);
-    if(isPlay && playlist[nowIndex].url) audio.play();
-}
-prevBtn.onclick=()=>{
-    nowIndex = (nowIndex - 1 + playlist.length) % playlist.length;
-    loadMusic(nowIndex);
-    if(isPlay && playlist[nowIndex].url) audio.play();
-}
-audio.addEventListener('ended',()=>nextBtn.click());
+            // 加载歌曲函数，带空值容错，杜绝null报错
+            function loadSong(index) {
+                if (!audio || !coverImg || !songName || !songAuthor) return;
+                const targetSong = songList[index];
+                audio.src = targetSong.src;
+                coverImg.src = targetSong.cover;
+                songName.innerText = targetSong.name;
+                songAuthor.innerText = targetSong.author;
+            }
 
-// ========== 7. 鼠标点击粒子特效（纯本地实现，无依赖） ==========
-const canvas=document.getElementById('particles');
-const ctx=canvas.getContext('2d');
-let w=canvas.width=window.innerWidth;
-let h=canvas.height=window.innerHeight;
-window.onresize=()=>{
-    w=canvas.width=window.innerWidth;
-    h=canvas.height=window.innerHeight;
-};
+            // 页面初始化加载第一首
+            loadSong(currentIndex);
 
-class Particle{
-    constructor(x,y){
-        this.x=x;this.y=y;
-        this.r=Math.random()*4+2;
-        this.dx=Math.random()*6-3;
-        this.dy=Math.random()*6-3;
-        this.alpha=1;
-    }
-    draw(){
-        ctx.beginPath();
-        ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
-        ctx.fillStyle=`rgba(135,206,255,${this.alpha})`;
-        ctx.fill();
-    }
-    update(){
-        this.x+=this.dx;
-        this.y+=this.dy;
-        this.alpha-=0.02;
-    }
-}
-let particles=[];
-canvas.onclick=e=>{
-    for(let i=0;i<20;i++){
-        particles.push(new Particle(e.clientX,e.clientY));
-    }
-}
-function animate(){
-    ctx.clearRect(0,0,w,h);
-    for(let i=particles.length-1;i>=0;i--){
-        particles[i].draw();
-        particles[i].update();
-        if(particles[i].alpha<=0){
-            particles.splice(i,1);
-        }
-    }
-    requestAnimationFrame(animate);
-}
-animate();
-</script>
+            // 播放/暂停按钮
+            playBtn.addEventListener('click', () => {
+                if (audio.paused) {
+                    audio.play();
+                    playBtn.classList.replace('fa-play', 'fa-pause');
+                } else {
+                    audio.pause();
+                    playBtn.classList.replace('fa-pause', 'fa-play');
+                }
+            });
+
+            // 下一首按钮
+            nextBtn.addEventListener('click', () => {
+                currentIndex = (currentIndex + 1) % songList.length;
+                loadSong(currentIndex);
+                audio.play();
+                playBtn.classList.replace('fa-play', 'fa-pause');
+            });
+
+            // 上一首按钮
+            prevBtn.addEventListener('click', () => {
+                currentIndex = (currentIndex - 1 + songList.length) % songList.length;
+                loadSong(currentIndex);
+                audio.play();
+                playBtn.classList.replace('fa-play', 'fa-pause');
+            });
+
+            // 实时更新进度条
+            audio.addEventListener('timeupdate', () => {
+                if (!audio.duration) return;
+                const progressPercent = (audio.currentTime / audio.duration) * 100;
+                progressBar.style.width = progressPercent + "%";
+            });
+
+            // 歌曲播放完毕自动切下一首
+            audio.addEventListener('ended', () => {
+                nextBtn.click();
+            });
+
+
+            const settingBtn = document.getElementById('settingBtn');
+            const modal = document.getElementById('wallpaperModal');
+            const closeBtn = document.querySelector('.close-btn');
+            const wallItems = document.querySelectorAll('.wall-item');
+
+            // 点击齿轮打开弹窗
+            settingBtn.onclick = () => {
+                modal.classList.add('show');
+            }
+            // 关闭弹窗
+            closeBtn.onclick = () => {
+                modal.classList.remove('show');
+            }
+
+            // 点击壁纸切换背景
+            wallItems.forEach(item => {
+                item.onclick = () => {
+                    const bgUrl = item.dataset.bg;
+                    document.querySelector('.bg-wrap').style.background = `url(${bgUrl}) center / cover no-repeat`;
+                    modal.classList.remove('show');
+                    // 持久化保存壁纸，刷新不丢失
+                    localStorage.setItem("bgImage", bgUrl);
+                }
+            });
+
+            // 页面加载自动恢复上次壁纸
+            window.addEventListener('load', () => {
+                const savedBg = localStorage.getItem("bgImage");
+                if (savedBg) {
+                    document.querySelector('.bg-wrap').style.background = `url(${savedBg}) center / cover no-repeat`;
+                }
+            })
+        </script>
 </body>
+
+
 </html>
