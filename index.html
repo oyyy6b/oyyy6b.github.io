@@ -5,9 +5,8 @@
     <meta charset="UTF-8">
     <title>玻璃态导航页</title>
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- 后续CSS、JS写在这里 -->
+    <!-- 后续CSS、JS -->
     <style>
-        /* 暂时空着，下一节写玻璃样式 */
         /* 全局重置，清除默认边距 */
         * {
             margin: 0;
@@ -146,7 +145,7 @@
             height: 40px;
         }
 
-        /* 统一所有玻璃面板通用样式，一次性复用 */
+        /* 统一所有玻璃面板通用样式 */
         .glass {
             /* 提高白色透明度，从0.15改成0.22，更明显 */
             background: rgba(255, 255, 255, 0.22);
@@ -179,7 +178,7 @@
             transform: translateZ(0);
         }
 
-        /* 鼠标悬浮卡片轻微放大提亮，和原图交互一致 */
+        /* 鼠标悬浮卡片轻微放大提亮 */
         .nav-card:hover {
             transform: scale(1.05);
             background: rgba(255, 255, 255, 0.22);
@@ -633,7 +632,7 @@
             <button class="close-btn">关闭</button>
         </div>
     </div>
-    <!-- 音频核心，页面看不见，负责发声，不能删 -->
+    <!-- 音频核心 -->
     <audio id="audio-player">
         <script>
             // 定义更新时间函数
